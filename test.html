@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ESP32-CAM API Test</title>
+<style>
+body{
+    font-family: Arial;
+    text-align:center;
+    margin-top:40px;
+}
+
+#preview{
+    margin-top:20px;
+    max-width:400px;
+}
+
+button{
+    padding:10px 20px;
+    font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>ESP32-CAM Image Upload Test</h2>
+
+<input type="file" id="imageInput" accept="image/*"><br><br>
+
+<button onclick="uploadImage()">Send to API</button>
+
+<h3>Preview</h3>
+<img id="preview">
+
+<h3>Server Response</h3>
+<pre id="response"></pre>
+
+<script>
+
+const API_URL = "https://samjed_love_cam.sunmodza.com/trigger";
+
+const input = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+input.addEventListener("change", function(){
+    const file = input.files[0];
+    preview.src = URL.createObjectURL(file);
+});
+
+function uploadImage(){
+
+    const file = input.files[0];
+
+    if(!file){
+        alert("Please choose image");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    fetch(API_URL,{
+        method:"POST",
+        body:formData
+    })
+    .then(res => res.text())
+    .then(data=>{
+        document.getElementById("response").textContent = data;
+    })
+    .catch(err=>{
+        document.getElementById("response").textContent = err;
+    });
+
+}
+
+</script>
+
+</body>
+</html>
